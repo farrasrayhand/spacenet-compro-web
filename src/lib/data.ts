@@ -1,5 +1,6 @@
 import { company, socialLinks, trustPoints, valuePoints, whyPoints } from "@/data/company";
-import { coverageAreas } from "@/data/coverage";
+import { areaCoordinates, coverageAreas, kecamatanCoordinates } from "@/data/coverage";
+import { galleryItems, type GalleryItem } from "@/data/gallery";
 import { faqItems } from "@/data/faq";
 import { packagesData, promoFeature } from "@/data/packages";
 import { promo } from "@/data/promo";
@@ -89,6 +90,26 @@ export async function getFaqItems(): Promise<FaqItem[]> {
   return faqItems;
 }
 
+export async function getGalleryItems(): Promise<GalleryItem[]> {
+  return galleryItems;
+}
+
+export async function getCoverageCoordinates(): Promise<Record<string, { lat: number; lng: number }>> {
+  return kecamatanCoordinates;
+}
+
+/** Titik peta per kelurahan; fallback ke pusat kecamatan bila belum ada. */
+export async function getCoveragePoints(): Promise<Record<string, { lat: number; lng: number }>> {
+  const points: Record<string, { lat: number; lng: number }> = {};
+
+  for (const area of coverageAreas) {
+    const key = `${area.kecamatan}|${area.kelurahan}`;
+    points[key] = areaCoordinates[key] ?? kecamatanCoordinates[area.kecamatan] ?? { lat: -0.502, lng: 117.14 };
+  }
+
+  return points;
+}
+
 function normalizeAreaName(value: string): string {
   return value
     .toLowerCase()
@@ -134,14 +155,15 @@ export async function checkCoverage(kelurahan: string, kecamatan: string): Promi
 }
 
 /**
- * Titik sambung backend. Untuk tahap frontend, fungsi ini TIDAK menyimpan
- * apa pun ke database; ia hanya menyusun pesan WhatsApp.
- * Nanti: POST /api/registrations lalu tetap kembalikan URL WhatsApp.
+ * Menyimpan pendaftaran ke backend lalu mengembalikan URL WhatsApp.
+ * Kalau API gagal (mis. offline), pendaftaran tetap bisa dikirim lewat
+ * WhatsApp dan hasilnya ditandai `saved: false` agar UI bisa memberi tahu.
  */
 export async function submitRegistration(
   input: Registration,
   pkg: Package,
-): Promise<{ whatsappUrl: string }> {
+  extra: { website?: string } = {},
+): Promise<{ whatsappUrl: string; saved: boolean; id?: number }> {
   const message = buildRegistrationMessage({
     nama: input.nama,
     whatsapp: input.whatsapp,
@@ -152,6 +174,20 @@ export async function submitRegistration(
     tanggalPasang: input.tanggalPasang,
     catatan: input.catatan,
   });
+  const fallbackUrl = buildWhatsAppUrl({ text: message });
 
-  return { whatsappUrl: buildWhatsAppUrl({ text: message }) };
+  try {
+    const response = await fetch("/api/registrations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...input, ...extra, source: "web" }),
+    });
+
+    if (!response.ok) return { whatsappUrl: fallbackUrl, saved: false };
+
+    const data = (await response.json()) as { id?: number; whatsappUrl?: string };
+    return { whatsappUrl: data.whatsappUrl ?? fallbackUrl, saved: true, id: data.id };
+  } catch {
+    return { whatsappUrl: fallbackUrl, saved: false };
+  }
 }

@@ -11,6 +11,7 @@ const config: Config = {
       colors: {
         ink: "var(--ink)",
         blue: "var(--blue)",
+        bluetext: "var(--blue-text)",
         sky: "var(--sky)",
         bg: "var(--bg)",
         mist: "var(--mist)",

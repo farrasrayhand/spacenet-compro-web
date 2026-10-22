@@ -41,6 +41,9 @@ export const registrationSchema = z.object({
     .trim()
     .max(240, { message: "Catatan maksimal 240 karakter." })
     .optional(),
+  consent: z.boolean().refine((value) => value === true, {
+    message: "Centang persetujuan pemrosesan data sebelum mengirim.",
+  }),
 });
 
 export type RegistrationFormValues = z.infer<typeof registrationSchema>;

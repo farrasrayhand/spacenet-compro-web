@@ -39,6 +39,11 @@ export function Footer({ company, packages, socialLinks }: FooterProps) {
                 Daftar berlangganan
               </Link>
             </li>
+            <li>
+              <Link href="/privasi" className="inline-block py-1 text-muted hover:text-blue">
+                Kebijakan privasi
+              </Link>
+            </li>
           </ul>
         </nav>
 

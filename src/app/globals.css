@@ -12,6 +12,8 @@
 :root {
   --ink: #16181d;
   --blue: #1c6fd6;
+  /* teks biru di atas latar terang: 6,2:1 di bg, 5,6:1 di mist (AA) */
+  --blue-text: #175cb0;
   --sky: #2aa7e6;
   --bg: #f5f8fc;
   --mist: #e4edf8;
@@ -27,6 +29,7 @@
   :root {
     --ink: #e9eff7;
     --blue: #5aa6f0;
+    --blue-text: #5aa6f0;
     --sky: #6cc8f5;
     --bg: #0b0e13;
     --mist: #12171f;
@@ -101,7 +104,59 @@
   }
 }
 
-/* Satu-satunya animasi dekoratif: orbit di hero. */
+/* Penanda peta: simbol + warna, bukan warna saja. */
+.map-pin {
+  display: flex;
+  height: 30px;
+  width: 30px;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #ffffff;
+  border-radius: 9999px;
+  color: #ffffff;
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow:
+    0 1px 6px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+.map-pin-aktif {
+  background-color: #1c6fd6;
+}
+
+.map-pin-perluasan {
+  background-color: #b45309;
+}
+
+.map-pin-antrian {
+  background-color: #475569;
+}
+
+/* Klaster area yang berdekatan: angka jumlah area. */
+.map-pin-cluster {
+  background-color: #16181d;
+  font-size: 13px;
+}
+
+/* Logo: aset light (wordmark hitam) vs dark (wordmark putih). */
+.logo-on-dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo-on-light {
+    display: none;
+  }
+
+  .logo-on-dark {
+    display: inline-block;
+  }
+}
+
+/* Animasi dekoratif di hero: orbit + roket kecil. */
 @keyframes orbit-spin {
   from {
     transform: rotate(0deg);
@@ -121,13 +176,63 @@
   transform-origin: center;
 }
 
+@keyframes rocket-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes flame-flicker {
+  from {
+    transform: scale(0.75);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+.orbit-rocket {
+  position: absolute;
+  inset: 0;
+  animation: rocket-orbit 29s linear infinite;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.rocket-unit {
+  position: absolute;
+  left: 50%;
+  top: 4%;
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  /* Rocket default menghadap kanan-atas (45deg); +45deg agar searah gerak orbit. */
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.rocket-flame {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 70% 50%, #fde68a 0%, #f97316 55%, rgba(249, 115, 22, 0) 78%);
+  filter: blur(0.6px);
+  animation: flame-flicker 320ms ease-in-out infinite alternate;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
   .orbit-spin,
-  .orbit-spin-slow {
+  .orbit-spin-slow,
+  .orbit-rocket,
+  .rocket-flame {
     animation: none;
   }
 

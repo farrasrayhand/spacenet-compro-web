@@ -33,14 +33,14 @@ export function PackageList({ packages }: PackageListProps) {
           <h3 className="mt-2 text-lg font-bold not-italic text-ink">{pkg.name}</h3>
 
           <p className="mt-3 flex items-baseline gap-1">
-            <span className="font-heading text-4xl font-extrabold italic text-ink">
+            <span className="font-heading text-4xl font-extrabold italic tabular-nums text-ink">
               {pkg.speedMbps}
             </span>
             <span className="text-sm font-medium text-muted">Mbps</span>
           </p>
 
           <p className="mt-2 text-sm text-muted">
-            <span className="font-heading text-xl font-bold italic text-ink">
+            <span className="font-heading text-xl font-bold italic tabular-nums text-ink">
               {formatRupiah(pkg.pricePerMonth)}
             </span>
             /bulan

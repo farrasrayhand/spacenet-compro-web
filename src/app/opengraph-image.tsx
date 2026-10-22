@@ -69,7 +69,7 @@ export default async function OpengraphImage() {
             color: "#555F6E",
           }}
         >
-          <span>PT. Space Networx Mediatama</span>
+          <span>PT. Space Network Mediatama</span>
           <span style={{ color: "#1C6FD6", fontWeight: 600 }}>0811-585-255</span>
         </div>
       </div>

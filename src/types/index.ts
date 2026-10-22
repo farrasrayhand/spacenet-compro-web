@@ -50,6 +50,8 @@ export type Registration = {
   paketId: PackageId;
   tanggalPasang?: string;
   catatan?: string;
+  /** Persetujuan pemrosesan data pribadi (UU PDP). */
+  consent: boolean;
 };
 
 export type FaqItem = {

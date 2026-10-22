@@ -37,7 +37,7 @@ export default async function HomePage() {
         <div className="wrap py-14 sm:py-20">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-2xl">
-              <p className="text-sm font-semibold text-blue">Paket internet</p>
+              <p className="text-sm font-semibold text-bluetext">Paket internet</p>
               <h2 id="paket" className="mt-3 text-2xl sm:text-3xl">
                 Pilih kecepatan yang sesuai kebutuhan Anda
               </h2>
@@ -48,7 +48,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/paket"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue hover:text-ink"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-bluetext hover:text-ink"
             >
               Lihat tabel perbandingan
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -69,7 +69,7 @@ export default async function HomePage() {
       <section aria-labelledby="cek-jangkauan" className="border-b border-line bg-mist">
         <div className="wrap py-14 sm:py-20">
           <div className="max-w-2xl">
-            <p className="text-sm font-semibold text-blue">Cek jangkauan</p>
+            <p className="text-sm font-semibold text-bluetext">Cek jangkauan</p>
             <h2 id="cek-jangkauan" className="mt-3 text-2xl sm:text-3xl">
               Pastikan jaringan SpaceNet tersedia di area Anda
             </h2>

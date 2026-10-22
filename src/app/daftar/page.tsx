@@ -29,7 +29,7 @@ export default async function DaftarPage({ searchParams }: PageProps) {
     <>
       <section className="border-b border-line">
         <div className="wrap py-12 sm:py-16">
-          <p className="text-sm font-semibold text-blue">Pendaftaran</p>
+          <p className="text-sm font-semibold text-bluetext">Pendaftaran</p>
           <h1 className="mt-3 max-w-3xl text-3xl sm:text-4xl">Daftar berlangganan SpaceNet</h1>
           <p className="measure mt-5 text-base leading-relaxed text-muted">
             Isi data berikut. Setelah tombol kirim ditekan, aplikasi membuka WhatsApp admin dengan

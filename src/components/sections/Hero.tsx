@@ -1,4 +1,4 @@
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight, MapPin, Rocket } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 
 type HeroProps = {
@@ -88,6 +88,13 @@ export function Hero({ promoActive, promoNote }: HeroProps) {
             </g>
             <circle cx="200" cy="200" r="10" fill="var(--blue)" />
           </svg>
+
+          <div className="orbit-rocket">
+            <span className="rocket-unit">
+              <span className="rocket-flame" />
+              <Rocket className="h-6 w-6 text-blue" strokeWidth={2} aria-hidden="true" />
+            </span>
+          </div>
 
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="card w-[68%] p-5 text-center">

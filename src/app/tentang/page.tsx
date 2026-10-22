@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Building2, Clock, MapPin, ShieldCheck } from "lucide-react";
 import { CtaBand } from "@/components/sections/CtaBand";
+import { Gallery } from "@/components/sections/Gallery";
 import { WhyUs } from "@/components/sections/WhyUs";
-import { getCompany, getWhyPoints } from "@/lib/data";
+import { getCompany, getGalleryItems, getWhyPoints } from "@/lib/data";
+import { galleryTodoNote } from "@/data/gallery";
 
 export const metadata: Metadata = {
   title: "Tentang Kami",
@@ -12,7 +14,11 @@ export const metadata: Metadata = {
 };
 
 export default async function TentangPage() {
-  const [company, why] = await Promise.all([getCompany(), getWhyPoints()]);
+  const [company, why, gallery] = await Promise.all([
+    getCompany(),
+    getWhyPoints(),
+    getGalleryItems(),
+  ]);
 
   const facts = [
     { label: "Nama perusahaan", value: company.legalName },
@@ -28,7 +34,7 @@ export default async function TentangPage() {
     <>
       <section className="border-b border-line">
         <div className="wrap py-12 sm:py-16">
-          <p className="text-sm font-semibold text-blue">Tentang kami</p>
+          <p className="text-sm font-semibold text-bluetext">Tentang kami</p>
           <h1 className="mt-3 max-w-3xl text-3xl sm:text-4xl">
             Perusahaan jaringan lokal yang melayani Samarinda
           </h1>
@@ -124,6 +130,21 @@ export default async function TentangPage() {
               TODO: konfirmasi dari klien. Tahun berdiri dan riwayat perusahaan belum tersedia di
               sumber resmi mana pun.
             </p>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="dokumentasi" className="border-b border-line bg-mist">
+        <div className="wrap py-12 sm:py-16">
+          <h2 id="dokumentasi" className="text-2xl">
+            Dokumentasi
+          </h2>
+          <p className="measure mt-3 text-sm leading-relaxed text-muted">
+            Foto kegiatan operasional dan tim SpaceNet akan ditampilkan di sini setelah dokumentasi
+            resmi diterima.
+          </p>
+          <div className="mt-6">
+            <Gallery items={gallery} emptyNote={galleryTodoNote} />
           </div>
         </div>
       </section>

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { CoverageChecker } from "@/components/sections/CoverageChecker";
+import { CoverageMap } from "@/components/sections/CoverageMap";
 import { CtaBand } from "@/components/sections/CtaBand";
 import { COVERAGE_IS_SAMPLE, coverageSampleNote } from "@/data/coverage";
-import { getCompany, getCoverageAreas } from "@/lib/data";
+import { getCompany, getCoverageAreas, getCoveragePoints } from "@/lib/data";
 import type { CoverageStatus } from "@/types";
 
 export const metadata: Metadata = {
@@ -25,13 +26,17 @@ const statusClass: Record<CoverageStatus, string> = {
 };
 
 export default async function JangkauanPage() {
-  const [areas, company] = await Promise.all([getCoverageAreas(), getCompany()]);
+  const [areas, company, points] = await Promise.all([
+    getCoverageAreas(),
+    getCompany(),
+    getCoveragePoints(),
+  ]);
 
   return (
     <>
       <section className="border-b border-line">
         <div className="wrap py-12 sm:py-16">
-          <p className="text-sm font-semibold text-blue">Cek jangkauan</p>
+          <p className="text-sm font-semibold text-bluetext">Cek jangkauan</p>
           <h1 className="mt-3 max-w-3xl text-3xl sm:text-4xl">
             Apakah jaringan SpaceNet sudah sampai ke lokasi Anda?
           </h1>
@@ -100,6 +105,15 @@ export default async function JangkauanPage() {
               </tbody>
             </table>
           </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="peta-area" className="border-b border-line bg-mist">
+        <div className="wrap py-12 sm:py-16">
+          <h2 id="peta-area" className="sr-only">
+            Peta area jangkauan
+          </h2>
+          <CoverageMap areas={areas} points={points} />
         </div>
       </section>
 

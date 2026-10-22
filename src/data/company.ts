@@ -8,7 +8,7 @@ import type { Company, TrustPoint, ValuePoint } from "@/types";
  */
 export const company: Company = {
   brand: "SpaceNet",
-  legalName: "PT. Space Networx Mediatama",
+  legalName: "PT. Space Network Mediatama",
   whatsapp: "62811585255",
   phoneDisplay: "0811-585-255",
   address:

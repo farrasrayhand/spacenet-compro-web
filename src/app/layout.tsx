@@ -10,7 +10,7 @@ import { getCompany, getPackages, getPromo, getSocialLinks } from "@/lib/data";
 
 const exo = Exo_2({
   subsets: ["latin"],
-  weight: ["400", "600", "700", "800"],
+  weight: ["700", "800"],
   style: ["normal", "italic"],
   variable: "--font-exo",
   display: "swap",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     "internet fiber Samarinda",
     "pasang wifi Samarinda",
     "SpaceNet",
-    "PT. Space Networx Mediatama",
+    "PT. Space Network Mediatama",
   ],
   applicationName: "SpaceNet",
   alternates: { canonical: "/" },

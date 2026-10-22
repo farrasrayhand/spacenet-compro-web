@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MessageCircle } from "lucide-react";
@@ -29,6 +30,7 @@ export function RegistrationForm({ packages, defaultPackageId }: RegistrationFor
   const [status, setStatus] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [summary, setSummary] = useState<SummaryItem[]>([]);
+  const [honeypot, setHoneypot] = useState("");
 
   const {
     register,
@@ -44,6 +46,7 @@ export function RegistrationForm({ packages, defaultPackageId }: RegistrationFor
       paketId: defaultPackageId,
       tanggalPasang: "",
       catatan: "",
+      consent: false,
     },
   });
 
@@ -98,10 +101,15 @@ export function RegistrationForm({ packages, defaultPackageId }: RegistrationFor
       return;
     }
 
-    setStatus("Menyiapkan pesan WhatsApp...");
-    const { whatsappUrl } = await submitRegistration(parsed.data, pkg);
-    setStatus("Membuka WhatsApp. Jika tidak terbuka otomatis, gunakan tautan di bawah.");
-    window.location.assign(whatsappUrl);
+    setStatus("Menyimpan pendaftaran...");
+    const result = await submitRegistration(parsed.data, pkg, { website: honeypot });
+
+    setStatus(
+      result.saved
+        ? "Pendaftaran tersimpan. Membuka WhatsApp untuk konfirmasi ke admin..."
+        : "Server belum bisa menyimpan data, tetapi pendaftaran tetap bisa dikirim lewat WhatsApp.",
+    );
+    window.location.assign(result.whatsappUrl);
   }
 
   return (
@@ -212,6 +220,45 @@ export function RegistrationForm({ packages, defaultPackageId }: RegistrationFor
         error={errors.catatan?.message}
         {...register("catatan")}
       />
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="consent" className="flex items-start gap-2.5 text-sm leading-relaxed text-ink">
+          <input
+            id="consent"
+            type="checkbox"
+            aria-invalid={errors.consent ? true : undefined}
+            aria-describedby={errors.consent ? "consent-error" : undefined}
+            className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--blue)]"
+            {...register("consent")}
+          />
+          <span>
+            Saya setuju data yang saya isi diproses untuk pendaftaran dan konfirmasi pemasangan,
+            sesuai{" "}
+            <Link href="/privasi" className="text-blue underline underline-offset-2">
+              kebijakan privasi
+            </Link>
+            .
+          </span>
+        </label>
+        {errors.consent?.message ? (
+          <p id="consent-error" className="text-xs font-medium text-red-600 dark:text-red-400">
+            {errors.consent.message}
+          </p>
+        ) : null}
+      </div>
+
+      <div className="hidden" aria-hidden="true">
+        <label htmlFor="website">Website</label>
+        <input
+          id="website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={honeypot}
+          onChange={(event) => setHoneypot(event.target.value)}
+        />
+      </div>
 
       <div className="flex flex-col gap-3 border-t border-line pt-5 sm:flex-row sm:items-center">
         <Button type="submit" size="lg" disabled={isSubmitting}>

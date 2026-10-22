@@ -20,7 +20,7 @@ export default async function LayananPage() {
     <>
       <section className="border-b border-line">
         <div className="wrap py-12 sm:py-16">
-          <p className="text-sm font-semibold text-blue">Layanan</p>
+          <p className="text-sm font-semibold text-bluetext">Layanan</p>
           <h1 className="mt-3 max-w-3xl text-3xl sm:text-4xl">
             Koneksi internet untuk rumah, bisnis, dan perangkat
           </h1>
@@ -45,7 +45,7 @@ export default async function LayananPage() {
             </p>
             <Link
               href="/paket"
-              className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-blue hover:text-ink"
+              className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-bluetext hover:text-ink"
             >
               Lihat paket rumahan
               <ArrowRight className="h-4 w-4" aria-hidden="true" />

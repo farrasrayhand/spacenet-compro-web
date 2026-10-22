@@ -37,7 +37,7 @@ export function PackageComparison({ packages }: PackageComparisonProps) {
                     {pkg.name}
                   </th>
                   <td className="px-3 py-2.5 text-muted">{pkg.speedMbps} Mbps</td>
-                  <td className="px-3 py-2.5 font-semibold text-ink">
+                  <td className="px-3 py-2.5 font-semibold tabular-nums text-ink">
                     {formatRupiah(pkg.pricePerMonth)}
                   </td>
                 </tr>

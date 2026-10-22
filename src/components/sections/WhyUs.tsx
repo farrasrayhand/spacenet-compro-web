@@ -9,7 +9,7 @@ export function WhyUs({ points }: WhyUsProps) {
     <section aria-labelledby="kenapa-spacenet" className="border-b border-line">
       <div className="wrap py-14 sm:py-20">
         <div className="max-w-2xl">
-          <p className="text-sm font-semibold text-blue">Kenapa SpaceNet</p>
+          <p className="text-sm font-semibold text-bluetext">Kenapa SpaceNet</p>
           <h2 id="kenapa-spacenet" className="mt-3 text-2xl sm:text-3xl">
             Infrastruktur dan layanan yang bisa Anda andalkan
           </h2>

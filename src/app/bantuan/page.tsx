@@ -23,7 +23,7 @@ export default async function BantuanPage() {
     <>
       <section className="border-b border-line">
         <div className="wrap py-12 sm:py-16">
-          <p className="text-sm font-semibold text-blue">Bantuan</p>
+          <p className="text-sm font-semibold text-bluetext">Bantuan</p>
           <h1 className="mt-3 max-w-3xl text-3xl sm:text-4xl">Pusat bantuan pelanggan</h1>
           <p className="measure mt-5 text-base leading-relaxed text-muted">
             Temukan jawaban seputar berlangganan, pembayaran, dan gangguan. Jika belum terjawab,

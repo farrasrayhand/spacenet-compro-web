@@ -7,4 +7,8 @@ build/
 *.tsbuildinfo
 next-env.d.ts
 .DS_Store
+/data/
+*.db
+*.db-wal
+*.db-shm
 npm-debug.log*

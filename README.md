@@ -118,11 +118,65 @@ export const promo: Promo = { active: false, ... };
 Efeknya (sudah diuji): banner hilang, kalimat promo di hero hilang, dan poin "Gratis pemasangan"
 otomatis tidak lagi muncul di kartu paket maupun tabel perbandingan.
 
+## Panel admin & penyimpanan pendaftaran
+
+Form daftar **menyimpan data ke SQLite** lalu membuka WhatsApp. Kalau API gagal, pendaftaran tetap
+bisa dikirim lewat WhatsApp (UI memberi tahu bahwa data belum tersimpan).
+
+- Database: `node:sqlite` bawaan Node (tanpa dependency native), file di `data/spacenet.db`
+  (bisa diubah lewat `DB_PATH`).
+- Tabel `registrations`: nama, whatsapp, alamat, paket, tanggal pasang, catatan, `consent_at`,
+  `status`, `source`, `created_at`.
+- Panel: `/admin` (filter status + pencarian + ubah status + export CSV + pagination 20/halaman).
+- Notifikasi pendaftaran baru: webhook JSON (`NOTIFY_WEBHOOK_URL`, mendukung Discord) dan/atau email
+  SMTP (`SMTP_HOST`, `NOTIFY_TO`, dst). Kegagalan notifikasi tidak membatalkan pendaftaran; status
+  pengiriman dicatat di kolom `notified_at` / `notified_channel` dan tampil di tabel admin.
+- Login: `/admin/login`, sesi cookie httpOnly HMAC 8 jam.
+
+Aktifkan panel dengan membuat `.env.local` dari `.env.example`:
+
+```bash
+cp .env.example .env.local
+# isi ADMIN_PASSWORD dan ADMIN_SESSION_SECRET (openssl rand -hex 32)
+```
+
+**Deploy**: filesystem serverless (Vercel) tidak persisten untuk SQLite. Untuk produksi pakai VPS
+dengan volume untuk `./data`, atau ganti ke Turso/libSQL. Rate limit pendaftaran disimpan di memori
+(5 per 10 menit per IP) sehingga reset saat restart dan tidak dibagi antar-instance.
+
+## Privasi & consent
+
+Form punya checkbox persetujuan wajib dan tautan ke `/privasi`. Isi kebijakan privasi masih draf
+operasional (bertanda TODO) dan perlu ditinjau penanggung jawab hukum klien.
+
+## Galeri dokumentasi
+
+Komponen galeri + lightbox sudah siap tanpa foto. Cara mengisi: taruh file di `public/gallery/`,
+lalu daftarkan `src`, `alt`, `caption`, `width`, `height` di `src/data/gallery.ts`. Selama daftar
+kosong, halaman Tentang menampilkan catatan TODO (bukan gambar palsu).
+
+## Peta jangkauan
+
+`/jangkauan` menampilkan peta OpenStreetMap (Leaflet) dengan penanda bersimbol per area. Titik
+memakai pusat kecamatan dari Nominatim/OSM; **status area tetap data contoh**.
+
+## Testing
+
+```bash
+npm test        # Vitest: unit test format, WhatsApp, validasi, repository SQLite
+npm run e2e     # smoke test CDP memakai Brave/Chromium (server harus jalan di :3000)
+```
+
+`npm run e2e` memeriksa: semua rute punya title + h1, validasi form memunculkan ringkasan galat dan
+memindahkan fokus, cek jangkauan menampilkan hasil, dan tidak ada scroll horizontal di 390px.
+CI GitHub Actions menjalankan lint, typecheck, unit test, dan build.
+
 ## Yang masih perlu diganti pemilik (jangan dikarang)
 
 | Item | Status sekarang | Lokasi |
 | --- | --- | --- |
-| Logo resmi (SVG/PNG transparan) | Placeholder SVG buatan sendiri (orbit + kata SPACE/NET) | `src/components/ui/Logo.tsx` |
+| Logo resmi | Sudah dipasang: dua varian PNG di `public/` (light & dark), dipilih lewat `prefers-color-scheme` | `src/components/ui/Logo.tsx` |
+| Logo vektor (SVG) | Belum ada; PNG 400×96 tajam sampai tinggi ±48px | minta ke klien |
 | Logo APJII | Belum ada file; lencana berupa teks + catatan TODO | `src/data/company.ts` (`trustPoints`) |
 | Daftar kelurahan/kecamatan asli | **Data contoh**, ditandai jelas di UI | `src/data/coverage.ts` |
 | Email resmi | Tidak ditampilkan (`email: null`) | `src/data/company.ts` |
@@ -152,7 +206,13 @@ ditambahkan karena tidak ada di brosur.
 - **Tailwind 3 (bukan 4)**: brief meminta `tailwind.config.ts`, yang merupakan pola Tailwind 3.
 - **Token warna** ada di `src/app/globals.css`. Mode gelap hanya mengganti nilai CSS variable.
   `--sky` hanya untuk elemen dekoratif: kontrasnya di mode terang 2,5:1 (di bawah AA untuk teks).
-- **Animasi**: satu motif orbit di hero; otomatis mati saat `prefers-reduced-motion: reduce`.
+- **Animasi**: motif orbit + roket kecil yang mengelilingi kartu "Tanpa batas FUP" (29 detik/putaran,
+  api berkedip 320ms). Semua animasi mati saat `prefers-reduced-motion: reduce`.
+- **Logo**: aset klien berformat PNG berlatar putih, diproses jadi transparan. Karena wordmark aslinya
+  hitam, dibuat varian dark (wordmark putih, biru brand tetap) — bukan `filter: invert` supaya warna
+  biru tidak bergeser ke oranye.
+- **Ejaan legal**: `PT. Space Network Mediatama` mengikuti logo resmi klien (brief semula menulis
+  "Networx"). Konfirmasi ke klien bila ingin "Networx".
 - **Aksesibilitas**: skip link, fokus terlihat, label pada semua field, akordeon dengan
   `aria-expanded`/`aria-controls`, menu seluler `role="dialog"` + tutup dengan Escape, tabel dengan
   `<caption>`/`scope`, iframe peta dengan `title`.
@@ -168,6 +228,10 @@ ditambahkan karena tidak ada di brosur.
 - [x] Mode gelap berfungsi (token kontras AA: ink 16,7:1; muted 8,0:1; blue 7,5:1)
 - [x] `npm run build` dan `npm run lint` lulus tanpa galat
 - [x] Tidak ada data/angka klaim di luar brief bagian 5 dan 6
+- [x] Pendaftaran tersimpan ke SQLite + panel admin + export CSV + consent privasi
+- [x] Peta jangkauan bersimbol (status tidak hanya warna)
+- [x] Galeri siap-tempel (menunggu foto klien)
+- [x] 27 unit test + smoke test E2E + CI
 
 ## Pertanyaan terbuka untuk klien
 

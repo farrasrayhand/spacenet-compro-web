@@ -28,7 +28,7 @@ export default async function PaketPage() {
     <>
       <section className="border-b border-line">
         <div className="wrap py-12 sm:py-16">
-          <p className="text-sm font-semibold text-blue">Paket dan harga</p>
+          <p className="text-sm font-semibold text-bluetext">Paket dan harga</p>
           <h1 className="mt-3 max-w-3xl text-3xl sm:text-4xl">
             Empat paket internet untuk rumah dan bisnis
           </h1>

@@ -1,43 +1,41 @@
+import Image from "next/image";
 import Link from "next/link";
 
 type LogoProps = {
   className?: string;
   href?: string | null;
+  /** Tinggi tampilan (px). Lebar mengikuti rasio asli 400x96. */
+  height?: number;
 };
 
 /**
- * Placeholder logo: motif orbit + kata SPACE (ink) dan NET (biru), sesuai
- * deskripsi brief bagian 4. TODO: ganti dengan file logo resmi (SVG/PNG)
- * begitu pemilik mengirimkannya (brief bagian 10 poin 10).
+ * Logo resmi dari klien.
+ * Dua varian: light (wordmark hitam) dan dark (wordmark putih, biru tetap),
+ * dipilih lewat prefers-color-scheme di globals.css. Versi dark dibuat dari
+ * file asli, bukan dibalik dengan filter, supaya warna biru brand tidak berubah.
+ * TODO: minta file vektor (SVG) dari klien agar tajam di semua ukuran.
  */
-export function Logo({ className = "", href = "/" }: LogoProps) {
+export function Logo({ className = "", href = "/", height = 36 }: LogoProps) {
   const content = (
-    <span className="inline-flex items-center gap-2.5">
-      <svg
-        viewBox="0 0 40 40"
+    <span className="inline-flex items-center">
+      <Image
+        src="/logo-spacenet-light.png"
+        alt="SpaceNet — PT. Space Network Mediatama"
+        width={400}
+        height={96}
+        priority
+        className="logo-on-light w-auto"
+        style={{ height }}
+      />
+      <Image
+        src="/logo-spacenet-dark.png"
+        alt=""
         aria-hidden="true"
-        focusable="false"
-        className="h-9 w-9 shrink-0"
-      >
-        <circle cx="20" cy="20" r="15" fill="none" stroke="var(--line)" strokeWidth="1.5" />
-        <ellipse
-          cx="20"
-          cy="20"
-          rx="18"
-          ry="7"
-          fill="none"
-          stroke="var(--sky)"
-          strokeWidth="1.5"
-          transform="rotate(-28 20 20)"
-          opacity="0.9"
-        />
-        <circle cx="20" cy="20" r="5.5" fill="var(--blue)" />
-        <circle cx="35.2" cy="12.4" r="2.4" fill="var(--sky)" />
-      </svg>
-      <span className="font-heading text-xl font-extrabold italic tracking-tight">
-        <span className="text-ink">SPACE</span>
-        <span className="text-blue">NET</span>
-      </span>
+        width={400}
+        height={96}
+        className="logo-on-dark w-auto"
+        style={{ height }}
+      />
     </span>
   );
 
