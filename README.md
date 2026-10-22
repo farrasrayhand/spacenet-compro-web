@@ -28,6 +28,45 @@ npm run lint     # ESLint (flat config)
 npm run typecheck
 ```
 
+## Deploy di Easypanel
+
+Pilih **Build Method: Dockerfile** — paling ringan di antara empat opsi Easypanel
+(Dockerfile / Buildpacks / Nixpacks / Railpack). Alasannya:
+
+| Opsi | Kenapa |
+| --- | --- |
+| **Dockerfile** (dipakai) | Multi-stage: stage build dibuang, runtime hanya berisi `server.js` + `node_modules` hasil tracing Next (`output: "standalone"`). Image berbasis `node:22-alpine`. |
+| Nixpacks / Railpack | Hasil akhirnya juga container, tapi lapisan Nix + node_modules penuh (tanpa tracing) membuat image lebih besar dan build lebih lama. |
+| Buildpacks | Paling berat: banyak layer, cache, dan runtime penuh. |
+
+Setelan di Easypanel:
+
+| Field | Nilai |
+| --- | --- |
+| Build Method | Dockerfile |
+| Dockerfile Path | `Dockerfile` |
+| Port | `3000` |
+| Health Check Path | `/` |
+| Env | tidak wajib (semua data masih statis) |
+
+Catatan:
+
+- `next.config.ts` memakai `output: "standalone"` — jangan dihapus, kalau tidak `server.js` tidak
+  ikut ter-generate dan container gagal start.
+- Folder `public/` belum ada di repo ini. Kalau nanti menambah aset statis di `public/`,
+  tambahkan satu baris di stage `runner`:
+  `COPY --from=builder --chown=node:node /app/public ./public`.
+- `sharp` ikut ter-trace ke bundle, jadi optimasi gambar tetap jalan di container.
+- Static export (`output: "export"`) **tidak bisa dipakai** tanpa mengubah kode, karena
+  `/daftar` membaca `searchParams`.
+
+Tes lokal tanpa Easypanel:
+
+```bash
+docker build -t spacenet-web .
+docker run --rm -p 3000:3000 spacenet-web
+```
+
 ## Struktur
 
 ```
