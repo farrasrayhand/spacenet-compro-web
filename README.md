@@ -47,24 +47,30 @@ Setelan di Easypanel:
 | Dockerfile Path | `Dockerfile` |
 | Port | `3000` |
 | Health Check Path | `/` |
-| Env | tidak wajib (semua data masih statis) |
+| Mount / Volume | `/app/data` (wajib, agar SQLite tidak hilang saat redeploy) |
+| Env wajib | `ADMIN_PASSWORD`, `ADMIN_SESSION_SECRET` (≥ 16 karakter) |
+| Env opsional | `NOTIFY_WEBHOOK_URL`, `SMTP_*`, `NOTIFY_TO`, `DB_PATH` — lihat `.env.example` |
 
 Catatan:
 
 - `next.config.ts` memakai `output: "standalone"` — jangan dihapus, kalau tidak `server.js` tidak
   ikut ter-generate dan container gagal start.
-- Folder `public/` belum ada di repo ini. Kalau nanti menambah aset statis di `public/`,
-  tambahkan satu baris di stage `runner`:
-  `COPY --from=builder --chown=node:node /app/public ./public`.
+- Stage `runner` sudah menyalin `public/` (logo) dan membuat `/app/data` milik user `node`, lalu
+  container jalan sebagai non-root. DB default ada di `/app/data/spacenet.db`.
+- SQLite memakai modul bawaan Node (`node:sqlite`), jadi tidak perlu kompilasi native di image.
+- Cookie admin memakai `secure: true` di produksi, artinya login hanya bertahan lewat **HTTPS**.
+  Domain Easypanel sudah TLS; kalau dites lewat `http://IP:3000` login tidak akan tersimpan.
 - `sharp` ikut ter-trace ke bundle, jadi optimasi gambar tetap jalan di container.
-- Static export (`output: "export"`) **tidak bisa dipakai** tanpa mengubah kode, karena
-  `/daftar` membaca `searchParams`.
+- Static export (`output: "export"`) **tidak bisa dipakai**: ada `/daftar` dengan `searchParams`,
+  API route, dan panel admin yang butuh server.
 
 Tes lokal tanpa Easypanel:
 
 ```bash
 docker build -t spacenet-web .
-docker run --rm -p 3000:3000 spacenet-web
+docker run --rm -p 3000:3000 -v "$PWD/data:/app/data" \
+  -e ADMIN_PASSWORD=rahasia -e ADMIN_SESSION_SECRET=0123456789abcdef0123456789abcdef \
+  spacenet-web
 ```
 
 ## Struktur

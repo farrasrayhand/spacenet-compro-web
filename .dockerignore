@@ -4,7 +4,13 @@ out
 build
 coverage
 
+data
+*.db
+*.db-wal
+*.db-shm
+
 .git
+.github
 .gitignore
 .dockerignore
 Dockerfile
@@ -14,6 +20,8 @@ Dockerfile
 !.env.example
 
 README.md
+tests
+scripts
 npm-debug.log*
 *.tsbuildinfo
 .DS_Store
